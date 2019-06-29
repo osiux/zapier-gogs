@@ -1,24 +1,38 @@
 {
-  "name": "zapier-gogs",
-  "version": "1.0.0",
-  "description": "An example app for the Zapier platform.",
-  "repository": "osiux/zapier-gogs",
-  "homepage": "https://www.osiux.ws/",
-  "author": "Eduardo Reveles <me@osiux.ws>",
-  "license": "BSD-3-Clause",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha --recursive"
-  },
-  "engines": {
-    "node": "8.10.0",
-    "npm": ">=5.6.0"
-  },
-  "dependencies": {
-    "zapier-platform-core": "8.2.1"
-  },
-  "devDependencies": {
-    "mocha": "^5.2.0",
-    "should": "^13.2.0"
-  }
+    "name": "zapier-gogs",
+    "version": "1.0.0",
+    "description": "An example app for the Zapier platform.",
+    "repository": "osiux/zapier-gogs",
+    "homepage": "https://www.osiux.ws/",
+    "author": "Eduardo Reveles <me@osiux.ws>",
+    "license": "BSD-3-Clause",
+    "main": "index.js",
+    "scripts": {
+        "zapier-build": "rm -rf lib && babel src --out-dir lib",
+        "zapier-dev": "rm -rf lib && babel src --out-dir lib --watch",
+        "zapier-push": "npm run zapier-build && zapier push",
+        "test": "npm run zapier-build && mocha --recursive lib/test --require @babel/polyfill",
+        "format": "prettier --write \"**/*.js\""
+    },
+    "engines": {
+        "node": "8.10.0",
+        "npm": ">=5.6.0"
+    },
+    "dependencies": {
+        "@babel/polyfill": "^7.4.4",
+        "zapier-platform-core": "8.2.1"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.5",
+        "@babel/plugin-transform-regenerator": "^7.4.5",
+        "@babel/preset-env": "^7.4.5",
+        "babel-plugin-add-module-exports": "^1.0.2",
+        "eslint": "^6.0.1",
+        "eslint-config-prettier": "^6.0.0",
+        "eslint-plugin-prettier": "^3.1.0",
+        "mocha": "^5.2.0",
+        "prettier": "1.18.2",
+        "should": "^13.2.0"
+    }
 }
