@@ -1,6 +1,7 @@
-build
-docs
-node_modules
+/node_modules
+/lib
+/build
+/docs
 *.log
 .environment
 .env
