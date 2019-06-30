@@ -1,5 +1,14 @@
 import { getApiUrl } from '../utils';
 
+const appendIssueUrl = (bundle, input) => {
+    const noTrailingSlash = bundle.authData.gogsUrl.replace(/\/$/, '');
+
+    return {
+        ...input,
+        issue_url: `${noTrailingSlash}/${bundle.inputDataRaw.repository}/issues/${input.id}`,
+    };
+};
+
 // get a single issue
 const getIssue = async (z, bundle) => {
     const {
@@ -12,7 +21,7 @@ const getIssue = async (z, bundle) => {
         url: getApiUrl(gogsUrl, `repos/${repository}/issues/${id}`),
     });
 
-    return z.JSON.parse(response.content);
+    return appendIssueUrl(bundle, response.json);
 };
 
 // get a list of issues
@@ -26,7 +35,9 @@ const listIssues = async (z, bundle) => {
         url: getApiUrl(gogsUrl, `repos/${repository}/issues`),
     });
 
-    return z.JSON.parse(response.content);
+    const result = response.json.map(item => appendIssueUrl(bundle, item));
+
+    return result;
 };
 
 // create a issue
