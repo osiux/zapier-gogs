@@ -1,31 +1,29 @@
+import { getApiUrl } from '../utils';
+
 // get a single issue
 const getIssue = async (z, bundle) => {
+    const {
+        authData: { gogsUrl },
+        inputData: { id },
+        inputDataRaw: { repository },
+    } = bundle;
+
     const response = await z.request({
-        url: `https://jsonplaceholder.typicode.com/posts/${bundle.inputData.id}`,
+        url: getApiUrl(gogsUrl, `repos/${repository}/issues/${id}`),
     });
 
     return z.JSON.parse(response.content);
 };
 
 // get a list of issues
-const listIssues = async z => {
-    const response = await z.request({
-        url: 'https://jsonplaceholder.typicode.com/posts',
-        params: {
-            order_by: 'id desc',
-        },
-    });
+const listIssues = async (z, bundle) => {
+    const {
+        authData: { gogsUrl },
+        inputData: { repository },
+    } = bundle;
 
-    return z.JSON.parse(response.content);
-};
-
-// find a particular issue by name
-const searchIssues = async (z, bundle) => {
     const response = await z.request({
-        url: 'https://jsonplaceholder.typicode.com/posts',
-        params: {
-            query: `name:${bundle.inputData.name}`,
-        },
+        url: getApiUrl(gogsUrl, `repos/${repository}/issues`),
     });
 
     return z.JSON.parse(response.content);
@@ -33,14 +31,21 @@ const searchIssues = async (z, bundle) => {
 
 // create a issue
 const createIssue = async (z, bundle) => {
-    const response = z.request({
+    z.console.log(bundle);
+    const {
+        authData: { gogsUrl },
+        inputData: { repository, title, body },
+    } = bundle;
+
+    const response = await z.request({
         method: 'POST',
-        url: 'https://jsonplaceholder.typicode.com/posts',
+        url: getApiUrl(gogsUrl, `repos/${repository}/issues`),
         body: {
-            name: bundle.inputData.name, // json by default
+            title,
+            body,
         },
     });
-    
+
     return z.JSON.parse(response.content);
 };
 
@@ -52,31 +57,34 @@ const issue = {
         display: {
             label: 'Get Issue',
             description: 'Gets a issue from repository.',
+            hidden: true,
         },
         operation: {
-            inputFields: [{ key: 'id', required: true }],
+            inputFields: [
+                {
+                    key: 'repository',
+                    dynamic: 'repository',
+                    required: true,
+                },
+                { key: 'id', required: true },
+            ],
             perform: getIssue,
         },
     },
 
     list: {
         display: {
-            label: 'New Issue',
+            label: 'View Issues',
             description: 'Lists the issues.',
         },
         operation: {
+            inputFields: [
+                {
+                    key: 'repository',
+                    dynamic: 'repositoryList.full_name.full_name',
+                },
+            ],
             perform: listIssues,
-        },
-    },
-
-    search: {
-        display: {
-            label: 'Find Issue',
-            description: 'Finds a issue by searching.',
-        },
-        operation: {
-            inputFields: [{ key: 'name', required: true }],
-            perform: searchIssues,
         },
     },
 
@@ -86,17 +94,36 @@ const issue = {
             description: 'Creates a new issue.',
         },
         operation: {
-            inputFields: [{ key: 'name', required: true }],
+            inputFields: [
+                {
+                    key: 'repository',
+                    dynamic: 'repositoryList.full_name.full_name',
+                    required: true,
+                },
+                { key: 'title', required: true },
+                { key: 'body', required: true },
+            ],
             perform: createIssue,
         },
     },
 
     sample: {
         id: 1,
-        name: 'Test',
+        state: 'open',
+        title: 'Test',
+        body: 'Issue content',
+        user: {
+            id: 1,
+            username: 'zapier',
+        },
+        asignee: null,
+        created_at: '2016-03-05T14:56:48-05:00',
     },
 
-    outputFields: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }],
+    outputFields: [
+        { key: 'id', label: 'ID' },
+        { key: 'title', label: 'Title' },
+    ],
 };
 
 export default issue;

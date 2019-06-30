@@ -8,10 +8,10 @@
     "license": "BSD-3-Clause",
     "main": "index.js",
     "scripts": {
-        "zapier-build": "rm -rf lib && babel src --out-dir lib",
-        "zapier-dev": "rm -rf lib && babel src --out-dir lib --watch",
-        "zapier-push": "npm run zapier-build && zapier push",
-        "test": "npm run zapier-build && mocha --recursive lib/test --require @babel/polyfill",
+        "build": "rm -rf lib && babel src --out-dir lib",
+        "dev": "rm -rf lib && babel src --out-dir lib --watch",
+        "push": "npm run build && zapier push",
+        "test": "npm run build && mocha --recursive lib/test --require @babel/polyfill",
         "format": "prettier --write \"**/*.js\""
     },
     "engines": {
@@ -27,6 +27,7 @@
         "@babel/core": "^7.4.5",
         "@babel/plugin-transform-regenerator": "^7.4.5",
         "@babel/preset-env": "^7.4.5",
+        "babel-eslint": "^10.0.2",
         "babel-plugin-add-module-exports": "^1.0.2",
         "eslint": "^6.0.1",
         "eslint-config-prettier": "^6.0.0",

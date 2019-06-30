@@ -1,28 +1,41 @@
+import { getApiUrl } from './utils';
+
+const testAuth = async (z, bundle) => {
+    const response = await z.request({
+        url: getApiUrl(bundle.authData.gogsUrl, 'user'),
+    });
+
+    if (response.status !== 200) {
+        throw new Error('Error authenticating with Gogs.');
+    }
+
+    return response.json;
+};
+
 const authentication = {
     type: 'custom',
-    test: {
-        url: '{{bundle.authData.gogs_url}}/user',
-    },
+    test: testAuth,
     fields: [
         {
-            key: 'gogs_url',
+            key: 'gogsUrl',
             type: 'string',
             required: true,
             helpText: 'Your Gogs installation URL.',
         },
         {
-            key: 'gogs_access_token',
+            key: 'gogsAccessToken',
             type: 'string',
             required: true,
             helpText: 'Create one in Your Settings > Applications',
         },
         {
-            key: 'gogs_username',
+            key: 'username',
             type: 'string',
+            required: false,
             computed: true,
         },
     ],
-    connectionLabel: '{{bundle.authData.gogs_username}}',
+    connectionLabel: '{{username}}',
 };
 
 export default authentication;

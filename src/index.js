@@ -1,12 +1,14 @@
 import authentication from './authentication';
 import IssueResource from './resources/issue';
+import RepositoryResource from './resources/repository';
 import { version } from '../package.json';
 import { version as platformVersion } from 'zapier-platform-core';
 
 const appendAccessToken = (request, z, bundle) => {
-    if (bundle.authData.gogs_access_token) {
-        request.headers.Authorization = `token ${bundle.authData.gogs_access_token}`;
+    if (bundle.authData.gogsAccessToken) {
+        request.headers.Authorization = `token ${bundle.authData.gogsAccessToken}`;
     }
+
     return request;
 };
 
@@ -26,6 +28,7 @@ const App = {
     // If you want to define optional resources to simplify creation of triggers, searches, creates - do that here!
     resources: {
         [IssueResource.key]: IssueResource,
+        [RepositoryResource.key]: RepositoryResource,
     },
 
     // If you want your trigger to show up, you better include it here!
